@@ -50,7 +50,6 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, '140X_dataRun3_v3', '') # 
 
 
-
 #--------------------------
 # Define PAT sequence
 #--------------------------
@@ -109,8 +108,6 @@ from HLTrigger.Configuration.customizeHLTforCMSSW import customizeHLTforCMSSW
 process = customizeHLTforCMSSW(process,"GRun")
 
 
-
-
 #--------------------------
 # Tree producer
 #--------------------------
@@ -153,22 +150,20 @@ process.schedule = cms.Schedule(
                        )
 
 #process.schedule = cms.Schedule(process.pEcalAlignment)
-from PhysicsTools.PatAlgos.tools.helpers import associatePatAlgosToolsTask
-associatePatAlgosToolsTask(process)
+# from PhysicsTools.PatAlgos.tools.helpers import associatePatAlgosToolsTask
+#associatePatAlgosToolsTask(process)
 
 #Setup FWK for multithreaded
-process.options.numberOfThreads=cms.untracked.uint32(4)
-process.options.numberOfStreams=cms.untracked.uint32(0)
-
-
+#process.options.numberOfThreads=cms.untracked.uint32(4)
+#process.options.numberOfStreams=cms.untracked.uint32(0)
 
 # Customisation from command line
-from Configuration.DataProcessing.RecoTLR import customiseDataRun2Common 
+#from Configuration.DataProcessing.RecoTLR import customiseDataRun2Common 
 
 #call to customisation function customiseDataRun2Common imported from Configuration.DataProcessing.RecoTLR
-process = customiseDataRun2Common(process)
+#process = customiseDataRun2Common(process)
 
 # Add early deletion of temporary data products to reduce peak memory need
-from Configuration.StandardSequences.earlyDeleteSettings_cff import customiseEarlyDelete
-process = customiseEarlyDelete(process)
-# End adding early deletion
+#from Configuration.StandardSequences.earlyDeleteSettings_cff import customiseEarlyDelete
+#process = customiseEarlyDelete(process)
+# End adding early deletion 
