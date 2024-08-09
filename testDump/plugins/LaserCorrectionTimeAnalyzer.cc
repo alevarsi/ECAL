@@ -1,5 +1,5 @@
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h" // Usa la nuova classe base
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
@@ -7,8 +7,9 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "TTree.h"
+#include "RecoLocalCalo/EcalRecProducers/interface/EcalRecHitWorkerBaseClass.h"
 
-class LaserCorrectionTimeAnalyzer : public edm::EDAnalyzer {
+class LaserCorrectionTimeAnalyzer : public edm::one::EDAnalyzer<> { // Deriva da edm::one::EDAnalyzer<>
 public:
     explicit LaserCorrectionTimeAnalyzer(const edm::ParameterSet&);
     ~LaserCorrectionTimeAnalyzer();
@@ -38,7 +39,7 @@ void LaserCorrectionTimeAnalyzer::analyze(const edm::Event& iEvent, const edm::E
     iEvent.getByToken(ebRecHitToken_, ebRecHits);
 
     for (const auto& hit : *ebRecHits) {
-        laserCorrection_ = hit.laserCorrection();
+        laserCorrection_ = hit.getLaserCorrection();
         time_ = hit.time();
         tree_->Fill();
     }
@@ -47,11 +48,19 @@ void LaserCorrectionTimeAnalyzer::analyze(const edm::Event& iEvent, const edm::E
     iEvent.getByToken(eeRecHitToken_, eeRecHits);
 
     for (const auto& hit : *eeRecHits) {
-        laserCorrection_ = hit.laserCorrection();
+        laserCorrection_ = hit.getLaserCorrection();
         time_ = hit.time();
         tree_->Fill();
     }
 }
+
+void LaserCorrectionTimeAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
+    edm::ParameterSetDescription desc;
+    desc.add<edm::InputTag>("EBRecHitTag", edm::InputTag("ecalRecHit", "EcalRecHitsEB"));
+    desc.add<edm::InputTag>("EERecHitTag", edm::InputTag("ecalRecHit", "EcalRecHitsEE"));
+    descriptions.add("laserCorrectionTimeAnalyzer", desc);
+}
+
 
 LaserCorrectionTimeAnalyzer::~LaserCorrectionTimeAnalyzer() {}
 
