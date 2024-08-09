@@ -4,6 +4,8 @@
 <use name="FWCore/ServiceRegistry"/>
 <use name="CommonTools/UtilAlgos"/>
 <use name="DataFormats/Common"/>
+<use name="CondFormats/DataRecord"/>
+<use name="CalibCalorimetry/EcalLaserCorrection"/>
 <use name="DataFormats/GeometrySurface"/>
 <use name="ROOT"/>
 <export>
