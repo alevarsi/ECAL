@@ -39,7 +39,8 @@ void LaserCorrectionTimeAnalyzer::analyze(const edm::Event& iEvent, const edm::E
     iEvent.getByToken(ebRecHitToken_, ebRecHits);
 
     for (const auto& hit : *ebRecHits) {
-        laserCorrection_ = hit.getLaserCorrection();
+        // laserCorrection_ = hit.getLaserCorrection();
+        laserCorrection_ = 1;
         time_ = hit.time();
         tree_->Fill();
     }
@@ -48,18 +49,19 @@ void LaserCorrectionTimeAnalyzer::analyze(const edm::Event& iEvent, const edm::E
     iEvent.getByToken(eeRecHitToken_, eeRecHits);
 
     for (const auto& hit : *eeRecHits) {
-        laserCorrection_ = hit.getLaserCorrection();
+        // laserCorrection_ = hit.getLaserCorrection();
+        laserCorrection_ = 1;
         time_ = hit.time();
         tree_->Fill();
     }
 }
 
-void LaserCorrectionTimeAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
+/*void LaserCorrectionTimeAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
     edm::ParameterSetDescription desc;
     desc.add<edm::InputTag>("EBRecHitTag", edm::InputTag("ecalRecHit", "EcalRecHitsEB"));
     desc.add<edm::InputTag>("EERecHitTag", edm::InputTag("ecalRecHit", "EcalRecHitsEE"));
     descriptions.add("laserCorrectionTimeAnalyzer", desc);
-}
+} */
 
 
 LaserCorrectionTimeAnalyzer::~LaserCorrectionTimeAnalyzer() {}
