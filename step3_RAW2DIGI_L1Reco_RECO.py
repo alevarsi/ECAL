@@ -2,12 +2,12 @@
 # using: 
 # Revision: 1.19 
 # Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
-# with command line options: step3 --filein file:eos/user/a/amassiro/ECAL/2024/Era2024G/Run384187/1eabd076-2d7c-48ce-9f3f-d101256e304f.root --fileout file:testCmsDriver.root --eventcontent RECO --datatier RECO --conditions auto:run3_data --step RAW2DIGI,L1Reco,RECO --nThreads 1 --geometry DB:Extended --era Run3_2024 --no_exec -n 100
+# with command line options: step3 --filein file:/eos/user/a/amassiro/ECAL/2024/Era2024G/Run384187/1eabd076-2d7c-48ce-9f3f-d101256e304f.root --fileout file:testCmsDriver.root --eventcontent RECO --datatier RECO --conditions auto:run3_data --step RAW2DIGI,L1Reco,RECO --nThreads 1 --geometry DB:Extended --era Run3 --no_exec -n 100
 import FWCore.ParameterSet.Config as cms
 
-from Configuration.Eras.Era_Run3_2024_cff import Run3_2024
+from Configuration.Eras.Era_Run3_cff import Run3
 
-process = cms.Process('RECO',Run3_2024)
+process = cms.Process('RECO',Run3)
 
 # import of standard configurations
 process.load('Configuration.StandardSequences.Services_cff')
@@ -26,6 +26,8 @@ process.maxEvents = cms.untracked.PSet(
     input = cms.untracked.int32(100),
     output = cms.optional.untracked.allowed(cms.int32,cms.PSet)
 )
+
+process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(1)
 
 # Input source
 process.source = cms.Source("PoolSource",
@@ -80,8 +82,9 @@ process.RECOoutput = cms.OutputModule("PoolOutputModule",
         filterName = cms.untracked.string('')
     ),
     fileName = cms.untracked.string('file:testCmsDriver.root'),
-    outputCommands = process.RECOEventContent.outputCommands,
-    splitLevel = cms.untracked.int32(0)
+    outputCommands= cms.untracked.vstring("drop *",
+                                          'keep *_ecal*_*_*'),
+    #outputCommands = process.RECOEventContent.outputCommands,    splitLevel = cms.untracked.int32(0)
 )
 
 # Additional output definition
@@ -89,6 +92,14 @@ process.RECOoutput = cms.OutputModule("PoolOutputModule",
 # Other statements
 from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_data', '')
+
+process.GEMGeometryESModule = cms.ESProducer("GEMGeometryESModule",
+    alignmentsLabel = cms.string(''),
+    appendToDataLabel = cms.string(''),
+    applyAlignment = cms.bool(False),
+    fromDD4hep = cms.bool(False),
+    fromDDD = cms.bool(False)
+)
 
 # Path and EndPath definitions
 process.raw2digi_step = cms.Path(process.RawToDigi)
@@ -98,7 +109,11 @@ process.endjob_step = cms.EndPath(process.endOfProcess)
 process.RECOoutput_step = cms.EndPath(process.RECOoutput)
 
 # Schedule definition
-process.schedule = cms.Schedule(process.raw2digi_step,process.L1Reco_step,process.reconstruction_step,process.endjob_step,process.RECOoutput_step)
+process.schedule = cms.Schedule(process.raw2digi_step,
+                                process.L1Reco_step,
+                                process.reconstruction_step,
+                                process.endjob_step,
+                                process.RECOoutput_step)
 from PhysicsTools.PatAlgos.tools.helpers import associatePatAlgosToolsTask
 associatePatAlgosToolsTask(process)
 
@@ -111,6 +126,6 @@ from FWCore.Modules.logErrorHarvester_cff import customiseLogErrorHarvesterUsing
 process = customiseLogErrorHarvesterUsingOutputCommands(process)
 
 # Add early deletion of temporary data products to reduce peak memory need
-from Configuration.StandardSequences.earlyDeleteSettings_cff import customiseEarlyDelete
-process = customiseEarlyDelete(process)
+#from Configuration.StandardSequences.earlyDeleteSettings_cff import customiseEarlyDelete
+#process = customiseEarlyDelete(process)
 # End adding early deletion
