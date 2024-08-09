@@ -96,7 +96,7 @@ process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_data', '')
 process.GEMGeometryESModule = cms.ESProducer("GEMGeometryESModule",
     alignmentsLabel = cms.string(''),
     appendToDataLabel = cms.string(''),
-    applyAlignment = cms.bool(False),
+    applyAlignment = cms.bool(False), #prima era True
     fromDD4hep = cms.bool(False),
     fromDDD = cms.bool(False)
 )
