@@ -60,10 +60,10 @@ void LaserCorrectionAnalyzer::analyze(const edm::Event& iEvent, const edm::Event
     double correction = laserDbService.getLaserCorrection(hit.detid(), iEvent.time());
     laserCorrectionHist_->Fill(correction);
 
-    // Seleziona un cristallo specifico, ad esempio (ieta, iphi) = (15, 15) nella Barrel
+    // Seleziona un cristallo specifico, ad esempio (ieta, iphi) = (1, 1) nella Barrel
     if (hit.id().subdetId() == EcalBarrel) {
       EBDetId ebId(hit.id());
-      if (ebId.ieta() == 15 && ebId.iphi() == 15) {
+      if (ebId.ieta() == 1 && ebId.iphi() == 1) {
         times_.push_back(iEvent.time().value());
         corrections_.push_back(correction);
       }
@@ -76,7 +76,6 @@ void LaserCorrectionAnalyzer::endJob() {
   for (size_t i = 0; i < times_.size(); ++i) {
     laserCorrectionGraph_->SetPoint(i, times_[i], corrections_[i]);
   }
-  laserCorrectionGraph_->SetLogx();
 }
 
 void LaserCorrectionAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
