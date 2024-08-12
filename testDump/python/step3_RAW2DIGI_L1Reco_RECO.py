@@ -83,7 +83,10 @@ process.RECOoutput = cms.OutputModule("PoolOutputModule",
     ),
     fileName = cms.untracked.string('file:testCmsDriver.root'),
     outputCommands= cms.untracked.vstring("drop *",
-                                          'keep *_ecal*_*_*'),
+                                          'keep *_ecal*_*_*',
+                                          "drop *_ecalDigis_*_*",
+                                          "drop *_ecalPreshowerDigis_*_*"),
+
     #outputCommands = process.RECOEventContent.outputCommands,    splitLevel = cms.untracked.int32(0)
 )
 
