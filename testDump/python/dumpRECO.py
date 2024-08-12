@@ -21,7 +21,7 @@ process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring('file:/afs/cern.ch/user/a/avarsi/CMSSW_14_0_13_patch1/src/ECAL/testDump/python/dataRECO.root')
 )
 
-process.demo = cms.EDAnalyzer('LaserCorrectionAnalyzer',
+process.demo = cms.EDAnalyzer('LaserCorrectionTimeAnalyzer',
     recHits = cms.InputTag("ecalRecHit", "EcalRecHitsEB")
 )
 
