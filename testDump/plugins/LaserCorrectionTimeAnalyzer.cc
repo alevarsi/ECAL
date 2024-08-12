@@ -1,14 +1,55 @@
 // system include files
 #include <memory>
+#include <vector>
 
-#include "LaserCorrectionTimeAnalyzer.h"
+// CMSSW framework include files
+#include "FWCore/Framework/interface/Frameworkfwd.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
+#include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/MakerMacros.h"
+#include "FWCore/ParameterSet/interface/ParameterSet.h"
+#include "FWCore/ServiceRegistry/interface/Service.h"
+#include "CommonTools/UtilAlgos/interface/TFileService.h"
+#include "DataFormats/EcalRecHit/interface/EcalRecHitCollections.h"
+#include "FWCore/Utilities/interface/ESGetToken.h"
+#include "CondFormats/DataRecord/interface/EcalLaserDbRecord.h"
 #include "CalibCalorimetry/EcalLaserCorrection/interface/EcalLaserDbService.h"
-#include "CalibCalorimetry/EcalLaserCorrection/interface/EcalLaserDbRecord.h"
+#include "CondFormats/RunInfo/interface/LHCInfo.h"
+#include "CondFormats/DataRecord/interface/LHCInfoRcd.h"
+
+
+// ROOT include files
+#include "TTree.h"
+
+class LaserCorrectionTimeAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources> {
+public:
+    explicit LaserCorrectionTimeAnalyzer(const edm::ParameterSet&);
+    ~LaserCorrectionTimeAnalyzer();
+
+    static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
+
+private:
+    virtual void analyze(const edm::Event&, const edm::EventSetup&) override;
+
+    // Member variables
+    edm::EDGetTokenT<EcalRecHitCollection> ebRecHitToken_;
+    edm::EDGetTokenT<EcalRecHitCollection> eeRecHitToken_;
+    edm::ESGetToken<EcalLaserDbService, EcalLaserDbRecord> laserDbToken_;
+    edm::ESGetToken<LHCInfo, LHCInfoRcd> lhcInfoToken_;
+    
+    TTree* tree_;
+    float laserCorrection_;
+    float time_;
+    float energy_;
+    int hitDetId_;
+};
 
 LaserCorrectionTimeAnalyzer::LaserCorrectionTimeAnalyzer(const edm::ParameterSet& iConfig)
     : ebRecHitToken_(consumes<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("EBRecHitTag"))),
       eeRecHitToken_(consumes<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("EERecHitTag"))),
-      laserDbToken_(esConsumes<EcalLaserDbService, EcalLaserDbRecord>()) // Inizializza il token
+      laserDbToken_(esConsumes<EcalLaserDbService, EcalLaserDbRecord>()),
+      lhcInfoToken_(esConsumes<LHCInfo, LHCInfoRcd>())
+
 {
     edm::Service<TFileService> fs;
     tree_ = fs->make<TTree>("LaserCorrectionTimeTree", "Tree with laser correction and time");
@@ -19,16 +60,18 @@ LaserCorrectionTimeAnalyzer::LaserCorrectionTimeAnalyzer(const edm::ParameterSet
     tree_->Branch("hitDetId", &hitDetId_, "hitDetId/I");
 }
 
-
+LaserCorrectionTimeAnalyzer::~LaserCorrectionTimeAnalyzer() {}
 
 void LaserCorrectionTimeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     edm::Handle<EcalRecHitCollection> ebRecHits;
     iEvent.getByToken(ebRecHitToken_, ebRecHits);
+    
+    const auto& lhcInfo = iSetup.getData(lhcInfoToken_);
+    const auto& laser = iSetup.getData(laserDbToken_);
 
-    const auto& laser = iSetup.getData(laserDbToken_); // Usa il token per ottenere il servizio
-
+    auto fillStartTime = lhcInfo.fillStartTime();
+G
     for (const auto& hit : *ebRecHits) {
-        //laserCorrection_ = rand_range(1, 2);
         laserCorrection_ = laser.getLaserCorrection(hit.detid(), iEvent.time());
         time_ = hit.time();
         energy_ = hit.energy();
@@ -41,9 +84,7 @@ void LaserCorrectionTimeAnalyzer::analyze(const edm::Event& iEvent, const edm::E
     iEvent.getByToken(eeRecHitToken_, eeRecHits);
 
     for (const auto& hit : *eeRecHits) {
-
         laserCorrection_ = laser.getLaserCorrection(hit.detid(), iEvent.time());
-        //laserCorrection_ = rand_range(1, 2);
         time_ = hit.time();
         energy_ = hit.energy();
         hitDetId_ = hit.detid().rawId();
@@ -52,14 +93,10 @@ void LaserCorrectionTimeAnalyzer::analyze(const edm::Event& iEvent, const edm::E
     }
 }
 
-
 void LaserCorrectionTimeAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
     edm::ParameterSetDescription desc;
     desc.add<edm::InputTag>("EBRecHitTag", edm::InputTag("ecalRecHit", "EcalRecHitsEB"));
     desc.add<edm::InputTag>("EERecHitTag", edm::InputTag("ecalRecHit", "EcalRecHitsEE"));
-    //descriptions.add("laserCorrectionTimeAnalyzer", desc);
-} 
-
-LaserCorrectionTimeAnalyzer::~LaserCorrectionTimeAnalyzer() {}
+}
 
 DEFINE_FWK_MODULE(LaserCorrectionTimeAnalyzer);
