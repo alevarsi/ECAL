@@ -1,14 +1,9 @@
+// system include files
+#include <memory>
+
 #include "LaserCorrectionTimeAnalyzer.h"
 #include "CalibCalorimetry/EcalLaserCorrection/interface/EcalLaserDbService.h"
 #include "CalibCalorimetry/EcalLaserCorrection/interface/EcalLaserDbRecord.h"
-
-
-float rand_range(float min, float max) {
-
-	return min + (max - min) * rand() / static_cast<float> (RAND_MAX);
-
-}
-
 
 LaserCorrectionTimeAnalyzer::LaserCorrectionTimeAnalyzer(const edm::ParameterSet& iConfig)
     : ebRecHitToken_(consumes<EcalRecHitCollection>(iConfig.getParameter<edm::InputTag>("EBRecHitTag"))),
