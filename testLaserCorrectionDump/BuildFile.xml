@@ -1,0 +1,14 @@
+<use name="FWCore/Framework"/>
+<use name="FWCore/MessageLogger"/>
+<use name="DataFormats/EcalRecHit"/>
+<use name="FWCore/ServiceRegistry"/>
+<use name="CommonTools/UtilAlgos"/>
+<use name="DataFormats/Common"/>
+<use name="CondFormats/DataRecord"/>
+<use name="DataFormats/GeometrySurface"/>
+<use name="CalibCalorimetry/EcalLaserCorrection"/>
+<use name="ROOT"/>
+<export>
+  <lib name="LaserCorrectionDump"/>
+</export>
+  
