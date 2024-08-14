@@ -79,8 +79,8 @@ void LaserCorrectionTimeAnalyzer::analyze(const edm::Event& iEvent, const edm::E
     const auto& lhcInfo = iSetup.getData(lhcInfoToken_);
     const auto& laser = iSetup.getData(laserDbToken_);
 
-    auto fillStartTime = lhcInfo.fillStartTime();
-G
+    auto fillStartTime = lhcInfo.beginTime();
+
     for (const auto& hit : *ebRecHits) {
         laserCorrection_ = laser.getLaserCorrection(hit.detid(), iEvent.time());
         time_ = hit.time();
