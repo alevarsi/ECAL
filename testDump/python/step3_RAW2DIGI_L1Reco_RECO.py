@@ -35,6 +35,13 @@ process.source = cms.Source("PoolSource",
     secondaryFileNames = cms.untracked.vstring()
 )
 
+# Laser Correction
+process.dumpEcalLaserCorrections = cms.EDAnalyzer('DumpEcalLaserCorrections',
+    recHits=cms.InputTag("ecalRecHit", "EcalRecHitsEE"),  
+    outputFileName=cms.string('laser_corrections.csv'),
+    detId=cms.uint32(838861517)  # ID del cristallo specifico
+)
+
 process.options = cms.untracked.PSet(
     IgnoreCompletely = cms.untracked.vstring(),
     Rethrow = cms.untracked.vstring(),
@@ -108,6 +115,7 @@ process.GEMGeometryESModule = cms.ESProducer("GEMGeometryESModule",
 process.raw2digi_step = cms.Path(process.RawToDigi)
 process.L1Reco_step = cms.Path(process.L1Reco)
 process.reconstruction_step = cms.Path(process.reconstruction)
+process.dumpLaserCorrections_step = cms.Path(process.dumpEcalLaserCorrections)
 process.endjob_step = cms.EndPath(process.endOfProcess)
 process.RECOoutput_step = cms.EndPath(process.RECOoutput)
 
@@ -115,6 +123,7 @@ process.RECOoutput_step = cms.EndPath(process.RECOoutput)
 process.schedule = cms.Schedule(process.raw2digi_step,
                                 process.L1Reco_step,
                                 process.reconstruction_step,
+                                process.dumpLaserCorrections_step,
                                 process.endjob_step,
                                 process.RECOoutput_step)
 from PhysicsTools.PatAlgos.tools.helpers import associatePatAlgosToolsTask
