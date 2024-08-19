@@ -6,7 +6,8 @@
 <use name="DataFormats/Common"/>
 <use name="CondFormats/DataRecord"/>
 <use name="DataFormats/GeometrySurface"/>
+<use name="CalibCalorimetry/EcalLaserCorrection"/>
 <use name="ROOT"/>
 <export>
-  <lib   name="LaserCorrectionTimeAnalyzer"/>
+  <lib   name="DumpEcalLaserCorrections"/>
 </export> 
