@@ -1,6 +1,10 @@
 # OutputLC
 
-E' l'output di CMSSW
+E' l'output di CMSSW, eseguendo semplicemente il file di configurazione con gli step fino a RECO
+
+# outputLibreria.txt
+
+E' l'output, però includendo il passaggio dumpLaserCorrections_step che utilizza la libreria DumpEcalLaserCorrections.cc
 
 # step3_RAW2DIGI...
 
