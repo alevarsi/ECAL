@@ -45,9 +45,136 @@ process.configurationMetadata = cms.untracked.PSet(
     version = cms.untracked.string('$Revision: 1.19 $')
 )
 
+process.CaloGeometryBuilder = cms.ESProducer("CaloGeometryBuilder",
+    SelectedCalos = cms.vstring(
+        'HCAL',
+        'ZDC',
+        #'CASTOR',
+        'EcalBarrel',
+        'EcalEndcap',
+        'EcalPreshower',
+        'TOWER'
+    )
+)
+
+process.initialStepClassifier1 = cms.EDProducer("TrackMVAClassifierPrompt",
+    beamspot = cms.InputTag("offlineBeamSpot"),
+    ignoreVertices = cms.bool(True),
+    mightGet = cms.optional.untracked.vstring,
+    mva = cms.PSet(
+        GBRForestFileName = cms.string(''),
+        #GBRForestLabel = cms.string('MVASelectorIter0_13TeV')
+    ),
+    qualityCuts = cms.vdouble(-0.9, -0.8, -0.7),
+    src = cms.InputTag("initialStepTracks"),
+    vertices = cms.InputTag("firstStepPrimaryVertices")
+)
+process.initialStepClassifier2 = cms.EDProducer("TrackMVAClassifierDetached",
+    beamspot = cms.InputTag("offlineBeamSpot"),
+    ignoreVertices = cms.bool(False),
+    mightGet = cms.optional.untracked.vstring,
+    mva = cms.PSet(
+        GBRForestFileName = cms.string(''),
+        #GBRForestLabel = cms.string('MVASelectorIter3_13TeV')
+    ),
+    qualityCuts = cms.vdouble(-0.5, 0.0, 0.5),
+    src = cms.InputTag("initialStepTracks"),
+    vertices = cms.InputTag("firstStepPrimaryVertices")
+)
+
+process.initialStepClassifier3 = cms.EDProducer("TrackMVAClassifierPrompt",
+    beamspot = cms.InputTag("offlineBeamSpot"),
+    ignoreVertices = cms.bool(False),
+    mightGet = cms.optional.untracked.vstring,
+    mva = cms.PSet(
+        GBRForestFileName = cms.string(''),
+        #GBRForestLabel = cms.string('MVASelectorIter1_13TeV')
+    ),
+    qualityCuts = cms.vdouble(-0.6, -0.3, -0.1),
+    src = cms.InputTag("initialStepTracks"),
+    vertices = cms.InputTag("firstStepPrimaryVertices")
+)
+
+process.initialStepClassifier3 = cms.EDProducer("TrackMVAClassifierPrompt",
+    beamspot = cms.InputTag("offlineBeamSpot"),
+    ignoreVertices = cms.bool(False),
+    mightGet = cms.optional.untracked.vstring,
+    mva = cms.PSet(
+        GBRForestFileName = cms.string(''),
+        #GBRForestLabel = cms.string('MVASelectorIter1_13TeV')
+    ),
+    qualityCuts = cms.vdouble(-0.6, -0.3, -0.1),
+    src = cms.InputTag("initialStepTracks"),
+    vertices = cms.InputTag("firstStepPrimaryVertices")
+)
+
+
+process.displacedGeneralStepClassifier2 = cms.EDProducer("TrackMVAClassifierPrompt",
+    beamspot = cms.InputTag("offlineBeamSpot"),
+    ignoreVertices = cms.bool(False),
+    mightGet = cms.optional.untracked.vstring,
+    mva = cms.PSet(
+        GBRForestFileName = cms.string(''),
+        #GBRForestLabel = cms.string('MVASelectorIter0_13TeV')
+    ),
+    qualityCuts = cms.vdouble(0.0, 0.0, 0.0),
+    src = cms.InputTag("displacedGeneralStepTracks"),
+    vertices = cms.InputTag("firstStepPrimaryVertices")
+)
+process.displacedRegionalStepClassifier2 = cms.EDProducer("TrackMVAClassifierPrompt",
+    beamspot = cms.InputTag("offlineBeamSpot"),
+    ignoreVertices = cms.bool(False),
+    mightGet = cms.optional.untracked.vstring,
+    mva = cms.PSet(
+        GBRForestFileName = cms.string(''),
+        #GBRForestLabel = cms.string('MVASelectorIter0_13TeV')
+    ),
+    qualityCuts = cms.vdouble(0.0, 0.0, 0.0),
+    src = cms.InputTag("displacedRegionalStepTracks"),
+    vertices = cms.InputTag("firstStepPrimaryVertices")
+)
+process.lowPtTripletStep = cms.EDProducer("TrackMVAClassifierPrompt",
+    beamspot = cms.InputTag("offlineBeamSpot"),
+    ignoreVertices = cms.bool(False),
+    mightGet = cms.optional.untracked.vstring,
+    mva = cms.PSet(
+        GBRForestFileName = cms.string(''),
+        #GBRForestLabel = cms.string('MVASelectorIter1_13TeV')
+    ),
+    qualityCuts = cms.vdouble(-0.6, -0.3, -0.1),
+    src = cms.InputTag("lowPtTripletStepTracks"),
+    vertices = cms.InputTag("firstStepPrimaryVertices")
+)
+
+process.lowPtTripletStep = cms.EDProducer("TrackMVAClassifierPrompt",
+    beamspot = cms.InputTag("offlineBeamSpot"),
+    ignoreVertices = cms.bool(False),
+    mightGet = cms.optional.untracked.vstring,
+    mva = cms.PSet(
+        GBRForestFileName = cms.string(''),
+        #GBRForestLabel = cms.string('MVASelectorIter1_13TeV')
+    ),
+    qualityCuts = cms.vdouble(-0.6, -0.3, -0.1),
+    src = cms.InputTag("lowPtTripletStepTracks"),
+    vertices = cms.InputTag("firstStepPrimaryVertices")
+)
+
+process.detachedTripletStepClassifier1 = cms.EDProducer("TrackMVAClassifierDetached",
+    beamspot = cms.InputTag("offlineBeamSpot"),
+    ignoreVertices = cms.bool(False),
+    mightGet = cms.optional.untracked.vstring,
+    mva = cms.PSet(
+        GBRForestFileName = cms.string(''),
+        #GBRForestLabel = cms.string('MVASelectorIter3_13TeV')
+    ),
+    qualityCuts = cms.vdouble(-0.5, 0.0, 0.5),
+    src = cms.InputTag("detachedTripletStepTracks"),
+    vertices = cms.InputTag("firstStepPrimaryVertices")
+)
+
 # Other statements
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, '140X_dataRun3_v3', '') # 
+process.GlobalTag = GlobalTag(process.GlobalTag, '140X_dataRun3_v4', '') # 
 
 
 #--------------------------
@@ -69,7 +196,6 @@ process.cleanPatTaus.preselection = cms.string('tauID("decayModeFinding") > 0.5 
 process.patMETs.addGenMET = cms.bool(False)
 
 process.options.allowUnscheduled = cms.untracked.bool(True)
-
 
 
 # Output definition
