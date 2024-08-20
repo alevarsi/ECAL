@@ -61,8 +61,4 @@ void DumpEcalLaserCorrections::analyze(const edm::Event& iEvent, const edm::Even
   }
 }
 
-//DumpEcalLaserCorrections::~DumpEcalLaserCorrections() {
-// outputFile_.close();
-//}
-
 DEFINE_FWK_MODULE(DumpEcalLaserCorrections);
