@@ -1,12 +1,7 @@
 # testDump
-Cartella che sto usando al momento (19 Ago 2024)
-# info
+Repository I'm currently working, in as of 21 Ago 2024
 
-step3_RAW2DIGI_L1Reco_RECO.py file di configurazione che arriva fino a RECO.
-
-# RUN 
-
-cmsRun step3_RAW2DIGI_L1Reco_RECO.py
+Ignore the rest, it's just testing material.
 
 
 
