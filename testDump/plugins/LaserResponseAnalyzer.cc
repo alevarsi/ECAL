@@ -68,7 +68,10 @@ LaserResponseAnalyzer::LaserResponseAnalyzer(const edm::ParameterSet& iConfig)
   laserResponseGraph_->GetXaxis()->SetTitle("Time (s)");
   laserResponseGraph_->GetYaxis()->SetTitle("Laser Correction");
   laserResponseGraph_->SetLineColor(kRed);
+  laserResponseGraph_->SetLineWidth(kRed);
   laserResponseGraph_->SetMarkerStyle(21);
+  laserResponseGraph_->SetMarkerColor(kRed);
+  laserResponseGraph_->SetMarkerSize(0.7);
 
 }
 
@@ -77,20 +80,23 @@ void LaserResponseAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSe
   //const auto& lhcInfo = iSetup.getData(lhcInfoToken_);
 
   double runStartTime = iEvent.getRun().beginTime().value();
-  std::cout << "\n runStartTime = " << runStartTime << std::endl;
 
-  //cond::Time_t fillStartTime = 1.;
-  std::cout << "\n EventTime" << iEvent.time().value() << std::endl;
   double timeFromFillStart = (iEvent.time().value() - runStartTime) / 1e9; // Converti da ns a secondi
-  std::cout << "\n TimeFromRunStart = " << timeFromFillStart << std::endl;
-  // Ottieni la correzione laser per un dato DetId e tempo dell'evento
+
   DetId myDetId(detId_);
   double correction = laserDbService.getLaserCorrection(myDetId, iEvent.time());
-  std::cout << "\n Correction = " << correction << std::endl;
-
 
   laserResponseGraph_->SetMarkerStyle(21);
   laserResponseGraph_->SetPoint(laserResponseGraph_->GetN(), timeFromFillStart, correction);
+  
+
+  // --- some checks ---
+  
+  //std::cout << "\n runStartTime = " << runStartTime << std::endl;
+  //std::cout << "\n EventTime" << iEvent.time().value() << std::endl;
+  //std::cout << "\n TimeFromRunStart = " << timeFromFillStart << std::endl;
+  //std::cout << "\n Correction = " << correction << std::endl;
+
 
   /* times_.push_back(timeFromFillStart);
   responses_.push_back(correction); */
