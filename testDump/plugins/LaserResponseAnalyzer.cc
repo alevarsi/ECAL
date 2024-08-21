@@ -4,11 +4,26 @@
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "DataFormats/EcalDetId/interface/EBDetId.h"
+
 #include "CalibCalorimetry/EcalLaserCorrection/interface/EcalLaserDbService.h"
 #include "CalibCalorimetry/EcalLaserCorrection/interface/EcalLaserDbRecord.h"
-#include "CondFormats/RunInfo/interface/FillInfo.h"
-#include "CondFormats/DataRecord/interface/FillInfoRcd.h"  // Includi FillInfoRcd
+
+#include "CondCore/ESSources/interface/registration_macros.h"
+#include "CondFormats/DataRecord/interface/RunSummaryRcd.h"
+#include "CondFormats/RunInfo/interface/RunSummary.h"
+#include "CondFormats/RunInfo/interface/RunInfo.h"
+#include "CondFormats/DataRecord/interface/L1TriggerScalerRcd.h"
+#include "CondFormats/RunInfo/interface/L1TriggerScaler.h"
+#include "CondFormats/DataRecord/interface/MixingRcd.h"
+#include "CondFormats/RunInfo/interface/MixingModuleConfig.h"
+#include "CondFormats/DataRecord/interface/LHCInfoRcd.h"
+#include "CondFormats/RunInfo/interface/LHCInfo.h"
+#include "CondFormats/DataRecord/interface/LHCInfoPerLSRcd.h"
+#include "CondFormats/RunInfo/interface/LHCInfoPerLS.h"
+#include "CondFormats/DataRecord/interface/LHCInfoPerFillRcd.h"
+#include "CondFormats/RunInfo/interface/LHCInfoPerFill.h" 
 #include "FWCore/Utilities/interface/typelookup.h"
+
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "TGraph.h"
@@ -23,57 +38,71 @@ public:
   static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
 private:
-  void analyze(const edm::Event&, const edm::EventSetup&) override;
-  void endJob() override;
+  
+  virtual void beginJob() override;
+  virtual void analyze(const edm::Event&, const edm::EventSetup&) override;
+  virtual void endJob() override;
 
   edm::ESGetToken<EcalLaserDbService, EcalLaserDbRecord> laserDbServiceToken_;
-  edm::ESGetToken<FillInfo, FillInfoRcd> lhcInfoToken_;
+  //#edm::ESHandle<FillInfo> fillRcd;
+  //edm::ESGetToken<LHCInfoPerFill, LHCInfoPerFillRcd> lhcInfoToken_;
 
   uint32_t detId_;
 
   TGraph* laserResponseGraph_;
-  std::vector<double> times_;
-  std::vector<double> responses_;
+  //std::vector<double> times_;
+  //std::vector<double> responses_;
 };
 
 LaserResponseAnalyzer::LaserResponseAnalyzer(const edm::ParameterSet& iConfig)
   : laserDbServiceToken_(esConsumes<EcalLaserDbService, EcalLaserDbRecord>()),
-    lhcInfoToken_(esConsumes<FillInfo, FillInfoRcd>()),
+    //lhcInfoToken_(esConsumes<LHCInfoPerFill, LHCInfoPerFillRcd>()),
     detId_(iConfig.getParameter<uint32_t>("detId")) {
-
+   
+  usesResource("TFileService");
   edm::Service<TFileService> fs;
+
   laserResponseGraph_ = fs->make<TGraph>();
   laserResponseGraph_->SetName("laserResponseGraph");
-  laserResponseGraph_->SetTitle("Laser Response vs Time for One Crystal");
+  laserResponseGraph_->SetTitle("Laser Correction vs Time for One Crystal");
   laserResponseGraph_->GetXaxis()->SetTitle("Time (s)");
-  laserResponseGraph_->GetYaxis()->SetTitle("Laser Response");
+  laserResponseGraph_->GetYaxis()->SetTitle("Laser Correction");
   laserResponseGraph_->SetLineColor(kRed);
+  laserResponseGraph_->SetMarkerStyle(21);
+
 }
 
 void LaserResponseAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
   const auto& laserDbService = iSetup.getData(laserDbServiceToken_);
-  const auto& lhcInfo = iSetup.getData(lhcInfoToken_);
-  
-  // Ottieni il tempo di inizio del fill
-  cond::Time_t fillStartTime = lhcInfo.createTime();
-  std::cout << "fillStartTime = " << fillStartTime << std::endl;
-  // Calcola il tempo dall'inizio del fill
-  double timeFromFillStart = (iEvent.time().value() - fillStartTime) / 1e9; // Converti da ns a secondi
-  
+  //const auto& lhcInfo = iSetup.getData(lhcInfoToken_);
+
+  double runStartTime = iEvent.getRun().beginTime().value();
+  std::cout << "\n runStartTime = " << runStartTime << std::endl;
+
+  //cond::Time_t fillStartTime = 1.;
+  std::cout << "\n EventTime" << iEvent.time().value() << std::endl;
+  double timeFromFillStart = (iEvent.time().value() - runStartTime) / 1e9; // Converti da ns a secondi
+  std::cout << "\n TimeFromRunStart = " << timeFromFillStart << std::endl;
   // Ottieni la correzione laser per un dato DetId e tempo dell'evento
   DetId myDetId(detId_);
   double correction = laserDbService.getLaserCorrection(myDetId, iEvent.time());
+  std::cout << "\n Correction = " << correction << std::endl;
 
-  // Salva il tempo e la correzione per il grafico
-  times_.push_back(timeFromFillStart);
-  responses_.push_back(correction);
+
+  laserResponseGraph_->SetMarkerStyle(21);
+  laserResponseGraph_->SetPoint(laserResponseGraph_->GetN(), timeFromFillStart, correction);
+
+  /* times_.push_back(timeFromFillStart);
+  responses_.push_back(correction); */
 }
 
-void LaserResponseAnalyzer::endJob() {
-  // Riempie il TGraph con i valori salvati
-  for (size_t i = 0; i < times_.size(); ++i) {
-    laserResponseGraph_->SetPoint(i, times_[i], responses_[i]);
-  }
+
+void LaserResponseAnalyzer::beginJob()
+{
+}
+
+void LaserResponseAnalyzer::endJob() 
+{
 }
 
 void LaserResponseAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
