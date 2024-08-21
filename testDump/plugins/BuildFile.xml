@@ -9,6 +9,8 @@
 <use name="CondFormats/EcalObjects"/>
 <use name="DataFormats/GeometrySurface"/>
 <use name="CalibCalorimetry/EcalLaserCorrection"/>
+<use name="CondFormats/RunInfo"/>
+
 <use name="ROOT"/>
 
 <flags EDM_PLUGIN="1"/>
