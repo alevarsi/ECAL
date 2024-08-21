@@ -86,8 +86,6 @@ process.options = cms.untracked.PSet(
     wantSummary = cms.untracked.bool(False)
 )
 
-#process.LaserCorrectionAnalyzer = cms.EDAnalyzer('LaserCorrectionAnalyzer')
-
 # Production Info
 process.configurationMetadata = cms.untracked.PSet(
     annotation = cms.untracked.string('step3 nevts:100'),
@@ -129,14 +127,11 @@ process.LaserResponseAnalyzer = cms.EDAnalyzer('LaserResponseAnalyzer',
     detId = cms.uint32(838861517)  # ID del cristallo specifico
 )
 
-
-
 # Path and EndPath definitions
 process.raw2digi_step = cms.Path(process.RawToDigi)
 process.L1Reco_step = cms.Path(process.L1Reco)
 process.reconstruction_step = cms.Path(process.reconstruction)
 process.LaserResponseAnalyzer_step = cms.Path(process.LaserResponseAnalyzer)
-#process.LaserCorrectionAnalyzer_step = cms.Path(process.LaserCorrectionAnalyzer)
 process.endjob_step = cms.EndPath(process.endOfProcess)
 process.RECOoutput_step = cms.EndPath(process.RECOoutput)
 
@@ -144,14 +139,11 @@ process.RECOoutput_step = cms.EndPath(process.RECOoutput)
 process.schedule = cms.Schedule(process.raw2digi_step,
                                 process.L1Reco_step,
                                 process.reconstruction_step,
-                                #process.LaserCorrectionAnalyzer_step,
                                 process.LaserResponseAnalyzer_step,
                                 process.endjob_step,
                                 process.RECOoutput_step)
 from PhysicsTools.PatAlgos.tools.helpers import associatePatAlgosToolsTask
 associatePatAlgosToolsTask(process)
-
-
 
 # Customisation from command line
 
