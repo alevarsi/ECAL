@@ -43,8 +43,8 @@ process.options = cms.untracked.PSet(
    SkipEvent = cms.untracked.vstring('ProductNotFound'),
 )
 
-process.TFileService = cms.Service("TFileService",
-     fileName = cms.string(options.outputFile)
+process.TFileService = cms.Service('TFileService',
+    fileName = cms.string('laser_response.root')
 )
 
 # Laser Correction
@@ -86,7 +86,8 @@ process.options = cms.untracked.PSet(
     wantSummary = cms.untracked.bool(False)
 )
 
-process.LaserCorrectionAnalyzer = cms.EDAnalyzer('LaserCorrectionAnalyzer')
+#process.LaserCorrectionAnalyzer = cms.EDAnalyzer('LaserCorrectionAnalyzer')
+
 # Production Info
 process.configurationMetadata = cms.untracked.PSet(
     annotation = cms.untracked.string('step3 nevts:100'),
@@ -94,8 +95,7 @@ process.configurationMetadata = cms.untracked.PSet(
     version = cms.untracked.string('$Revision: 1.19 $')
 )
 
-
-# Output definition
+# Output definition for RECO
 
 process.RECOoutput = cms.OutputModule("PoolOutputModule",
     dataset = cms.untracked.PSet(
@@ -125,12 +125,18 @@ process.GEMGeometryESModule = cms.ESProducer("GEMGeometryESModule",
     fromDDD = cms.bool(False)
 )
 
+process.LaserResponseAnalyzer = cms.EDAnalyzer('LaserResponseAnalyzer',
+    detId = cms.uint32(838861517)  # ID del cristallo specifico
+)
+
+
+
 # Path and EndPath definitions
 process.raw2digi_step = cms.Path(process.RawToDigi)
 process.L1Reco_step = cms.Path(process.L1Reco)
 process.reconstruction_step = cms.Path(process.reconstruction)
-#process.dumpLaserCorrections_step = cms.Path(process.dumpEcalLaserCorrections)
-process.LaserCorrectionAnalyzer_step = cms.Path(process.LaserCorrectionAnalyzer)
+process.LaserResponseAnalyzer_step = cms.Path(process.LaserResponseAnalyzer)
+#process.LaserCorrectionAnalyzer_step = cms.Path(process.LaserCorrectionAnalyzer)
 process.endjob_step = cms.EndPath(process.endOfProcess)
 process.RECOoutput_step = cms.EndPath(process.RECOoutput)
 
@@ -138,8 +144,8 @@ process.RECOoutput_step = cms.EndPath(process.RECOoutput)
 process.schedule = cms.Schedule(process.raw2digi_step,
                                 process.L1Reco_step,
                                 process.reconstruction_step,
-                                #process.dumpLaserCorrections_step,
-                                process.LaserCorrectionAnalyzer_step,
+                                #process.LaserCorrectionAnalyzer_step,
+                                process.LaserResponseAnalyzer_step,
                                 process.endjob_step,
                                 process.RECOoutput_step)
 from PhysicsTools.PatAlgos.tools.helpers import associatePatAlgosToolsTask
