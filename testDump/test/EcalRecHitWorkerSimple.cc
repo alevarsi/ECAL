@@ -45,6 +45,8 @@
 
 
 
+
+
 class EcalRecHitWorkerSimple : public EcalRecHitWorkerBaseClass {
 public:
   EcalRecHitWorkerSimple(const edm::ParameterSet&, edm::ConsumesCollector& c);
@@ -73,9 +75,10 @@ protected:
   edm::ESGetToken<EcalChannelStatus, EcalChannelStatusRcd> chStatusToken_;
   edm::ESGetToken<EcalLaserDbService, EcalLaserDbRecord> laserToken_;
 
-  // LHCInfoPerFill
+  // --- LHCInfoPerFill ---
+  edm::ESGetToken<LHCInfoPerFill, LHCInfoPerFillRcd> LHCInfoPerFillToken_;  // = c.esConsumes<LHCInfoPerFill, LHCInfoPerFillRcd>()
   edm::ESHandle<LHCInfoPerFill> m_LHCInfoPerFill;
-  edm::ESGetToken<LHCInfoPerFill, LHCInfoPerFillRcd> m_LHCInfoPerFillToken;  // = c.esConsumes<LHCInfoPerFill, LHCInfoPerFillRcd>()
+
 
   // Associate reco flagbit ( outer vector) to many db status flags (inner vector)
   std::vector<std::vector<uint32_t> > v_DB_reco_flags_;
@@ -136,7 +139,8 @@ EcalRecHitWorkerSimple::EcalRecHitWorkerSimple(const edm::ParameterSet& ps, edm:
 
   // --- LHCInfoPerFill ---
 
-  m_LHCInfoPerFillToken = c.esConsumes<LHCInfoPerFill, LHCInfoPerFillRcd>();
+  //LHCInfoPerFillToken_(esConsumes());
+  LHCInfoPerFillToken_ = c.esConsumes<LHCInfoPerFill, LHCInfoPerFillRcd>();
 
   }
 
@@ -151,7 +155,11 @@ EcalRecHitWorkerSimple::EcalRecHitWorkerSimple(const edm::ParameterSet& ps, edm:
 
 void EcalRecHitWorkerSimple::set(const edm::EventSetup& es) {
   ical = es.getHandle(icalToken_);
-  m_LHCInfoPerFill = es.getHandle(m_LHCInfoPerFillToken); // questo dà errore
+
+  // --- LHCInfoPerFill ---
+
+  m_LHCInfoPerFill = es.getHandle(LHCInfoPerFillToken_);
+
 
   if (!skipTimeCalib_) {
     itime = es.getHandle(itimeToken_);
@@ -207,7 +215,15 @@ bool EcalRecHitWorkerSimple::run(const edm::Event& evt,
 
 
 
-  // LHCInfoPerFill
+  // --- LHCInfoPerFill ---
+  
+  double timeSinceFillStart = m_LHCInfoPerFill->beginTime(); 
+  std::cout << "\nTime since fill start = " << timeSinceFillStart << std::endl;
+
+  int fillN = m_LHCInfoPerFill->fillNumber();
+  std::cout << "\n Fill number = " << fillN << std::endl;
+  float inst_lumi = m_LHCInfoPerFill->instLumi();
+  std::cout << "\n Inst Lumi = " << inst_lumi << std::endl;
 
 
 
