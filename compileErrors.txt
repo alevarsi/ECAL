@@ -1,0 +1,36 @@
+[avarsi@lxplus910 src]$ scramv1 b -j 20                          
+>> Local Products Rules ..... started
+>> Local Products Rules ..... done
+>> Subsystem BigProducts built
+>> Building CMSSW version CMSSW_14_0_13_patch1 ----
+>> Entering Package RecoLocalCalo/EcalRecProducers
+>> Creating project symlinks
+>> Entering Package CalibCalorimetry/EcalLaserCorrection
+>> Entering Package ECAL/testDump
+>> Entering Package ECAL/testLaserCorrectionDump
+>> Building edm plugin tmp/el9_amd64_gcc12/src/RecoLocalCalo/EcalRecProducers/plugins/RecoLocalCaloEcalRecProducersPlugins/libRecoLocalCaloEcalRecProducersPlugins.so
+>> Leaving Package ECAL/testDump
+>> Leaving Package ECAL/testLaserCorrectionDump
+>> Leaving Package CalibCalorimetry/EcalLaserCorrection
+>> Package ECAL/testDump built
+>> Package ECAL/testLaserCorrectionDump built
+>> Package CalibCalorimetry/EcalLaserCorrection built
+>> Subsystem ECAL built
+>> Subsystem CalibCalorimetry built
+/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/gcc/12.3.1-40d504be6370b5a30e3947a6e575ca28/bin/../lib/gcc/x86_64-redhat-linux-gnu/12.3.1/../../../../x86_64-redhat-linux-gnu/bin/ld.bfd: tmp/el9_amd64_gcc12/src/RecoLocalCalo/EcalRecProducers/plugins/RecoLocalCaloEcalRecProducersPlugins/ccsqGMM8.ltrans15.ltrans.o: in function `edm::eventsetup::EventSetupRecord::noResolverHandle<edm::ESHandle, FillInfo, FillInfoRcd>(edm::ESGetToken<FillInfo, FillInfoRcd> const&) const::{lambda()#1}::operator()() const':
+<artificial>:(.text+0x998): undefined reference to `char const* edm::typelookup::className<FillInfo>()'
+/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/gcc/12.3.1-40d504be6370b5a30e3947a6e575ca28/bin/../lib/gcc/x86_64-redhat-linux-gnu/12.3.1/../../../../x86_64-redhat-linux-gnu/bin/ld.bfd: <artificial>:(.text+0x9a3): undefined reference to `std::type_info const& edm::typelookup::classTypeInfo<FillInfo>()'
+/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/gcc/12.3.1-40d504be6370b5a30e3947a6e575ca28/bin/../lib/gcc/x86_64-redhat-linux-gnu/12.3.1/../../../../x86_64-redhat-linux-gnu/bin/ld.bfd: <artificial>:(.text+0x9fd): undefined reference to `char const* edm::typelookup::className<FillInfo>()'
+/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/gcc/12.3.1-40d504be6370b5a30e3947a6e575ca28/bin/../lib/gcc/x86_64-redhat-linux-gnu/12.3.1/../../../../x86_64-redhat-linux-gnu/bin/ld.bfd: tmp/el9_amd64_gcc12/src/RecoLocalCalo/EcalRecProducers/plugins/RecoLocalCaloEcalRecProducersPlugins/ccsqGMM8.ltrans15.ltrans.o: in function `edm::eventsetup::EventSetupRecordImpl::getImplementation<FillInfo>(FillInfo const*&, edm::ESResolverIndex, bool, edm::eventsetup::ComponentDescription const*&, std::shared_ptr<edm::ESHandleExceptionFactory>&) const::{lambda()#1}::operator()() const':
+<artificial>:(.text+0xbb0): undefined reference to `char const* edm::typelookup::className<FillInfo>()'
+/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/gcc/12.3.1-40d504be6370b5a30e3947a6e575ca28/bin/../lib/gcc/x86_64-redhat-linux-gnu/12.3.1/../../../../x86_64-redhat-linux-gnu/bin/ld.bfd: tmp/el9_amd64_gcc12/src/RecoLocalCalo/EcalRecProducers/plugins/RecoLocalCaloEcalRecProducersPlugins/ccsqGMM8.ltrans15.ltrans.o: in function `edm::eventsetup::EventSetupRecordImpl::getImplementation<FillInfo>(FillInfo const*&, edm::ESResolverIndex, bool, edm::eventsetup::ComponentDescription const*&, std::shared_ptr<edm::ESHandleExceptionFactory>&) const::{lambda()#2}::operator()() const':
+<artificial>:(.text+0xd51): undefined reference to `char const* edm::typelookup::className<FillInfo>()'
+/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/gcc/12.3.1-40d504be6370b5a30e3947a6e575ca28/bin/../lib/gcc/x86_64-redhat-linux-gnu/12.3.1/../../../../x86_64-redhat-linux-gnu/bin/ld.bfd: tmp/el9_amd64_gcc12/src/RecoLocalCalo/EcalRecProducers/plugins/RecoLocalCaloEcalRecProducersPlugins/ccsqGMM8.ltrans15.ltrans.o: in function `edm::FunctorESHandleExceptionFactory<edm::eventsetup::EventSetupRecord::invalidTokenHandle<edm::ESHandle, FillInfo, FillInfoRcd>(edm::ESGetToken<FillInfo, FillInfoRcd> const&) const::{lambda()#1}>::make() const':
+<artificial>:(.text+0x15c5): undefined reference to `char const* edm::typelookup::className<FillInfo>()'
+/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/gcc/12.3.1-40d504be6370b5a30e3947a6e575ca28/bin/../lib/gcc/x86_64-redhat-linux-gnu/12.3.1/../../../../x86_64-redhat-linux-gnu/bin/ld.bfd: <artificial>:(.text+0x15cd): undefined reference to `std::type_info const& edm::typelookup::classTypeInfo<FillInfo>()'
+/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/gcc/12.3.1-40d504be6370b5a30e3947a6e575ca28/bin/../lib/gcc/x86_64-redhat-linux-gnu/12.3.1/../../../../x86_64-redhat-linux-gnu/bin/ld.bfd: tmp/el9_amd64_gcc12/src/RecoLocalCalo/EcalRecProducers/plugins/RecoLocalCaloEcalRecProducersPlugins/ccsqGMM8.ltrans15.ltrans.o: in function `EcalRecHitWorkerSimple::set(edm::EventSetup const&)':
+<artificial>:(.text+0x2bc1): undefined reference to `char const* edm::typelookup::className<FillInfo>()'
+/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/gcc/12.3.1-40d504be6370b5a30e3947a6e575ca28/bin/../lib/gcc/x86_64-redhat-linux-gnu/12.3.1/../../../../x86_64-redhat-linux-gnu/bin/ld.bfd: <artificial>:(.text+0x2bc9): undefined reference to `std::type_info const& edm::typelookup::classTypeInfo<FillInfo>()'
+collect2: error: ld returned 1 exit status
+gmake: *** [config/SCRAM/GMake/Makefile.rules:1861: tmp/el9_amd64_gcc12/src/RecoLocalCalo/EcalRecProducers/plugins/RecoLocalCaloEcalRecProducersPlugins/libRecoLocalCaloEcalRecProducersPlugins.so] Error 1
+gmake: *** [There are compilation/build errors. Please see the detail log above.] Error 2
