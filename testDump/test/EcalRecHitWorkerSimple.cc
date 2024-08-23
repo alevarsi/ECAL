@@ -68,7 +68,8 @@ protected:
   edm::ESGetToken<EcalLaserDbService, EcalLaserDbRecord> laserToken_;
 
   // fillInfo
-  const edm::ESGetToken<FillInfo, FillInfoRcd> m_FillInfoToken;
+  edm::ESHandle<FillInfo> fillInfo;
+  edm::ESGetToken<FillInfo, FillInfoRcd> m_FillInfoToken;
 
 
   // Associate reco flagbit ( outer vector) to many db status flags (inner vector)
@@ -140,6 +141,7 @@ EcalRecHitWorkerSimple::EcalRecHitWorkerSimple(const edm::ParameterSet& ps, edm:
 
 void EcalRecHitWorkerSimple::set(const edm::EventSetup& es) {
   ical = es.getHandle(icalToken_);
+  fillInfo = es.getHandle(m_FillInfoToken); // questo dà errore
 
   if (!skipTimeCalib_) {
     itime = es.getHandle(itimeToken_);
@@ -150,6 +152,8 @@ void EcalRecHitWorkerSimple::set(const edm::EventSetup& es) {
   chStatus = es.getHandle(chStatusToken_);
   if (laserCorrection_)
     laser = es.getHandle(laserToken_);
+
+
 }
 
 bool EcalRecHitWorkerSimple::run(const edm::Event& evt,
@@ -191,11 +195,13 @@ bool EcalRecHitWorkerSimple::run(const edm::Event& evt,
                                      << "! something wrong with EcalIntercalibConstants in your DB? ";
   }
 
+
+
   // fillInfo
 
-  edm::LogPrint("FillInfoESAnalyzer") << "###FillInfoESAnalyzer::analyze" << std::endl;
+  /*edm::LogPrint("FillInfoESAnalyzer") << "###FillInfoESAnalyzer::analyze" << std::endl;
   edm::LogPrint("FillInfoESAnalyzer") << " I AM IN RUN NUMBER " << evt.id().run() << std::endl;
-  edm::LogPrint("FillInfoESAnalyzer") << " ---EVENT NUMBER " << evt.id().event() << std::endl;
+  edm::LogPrint("FillInfoESAnalyzer") << " ---EVENT NUMBER " << evt.id().event() << std::endl; */
   edm::eventsetup::EventSetupRecordKey recordKey(
   edm::eventsetup::EventSetupRecordKey::TypeTag::findType("FillInfoRcd"));
   if (recordKey.type() == edm::eventsetup::EventSetupRecordKey::TypeTag()) {
@@ -203,6 +209,8 @@ bool EcalRecHitWorkerSimple::run(const edm::Event& evt,
     edm::LogPrint("FillInfoESAnalyzer") << "Record \"FillInfoRcd"
                                         << "\" does not exist " << std::endl;
   }
+ 
+
 
   /* TTree * tree_   tree_ = new TTree("LaserCorrections", "Laser Corrections for a crystal");
   TFile * file_ = new TFile("laser_correction_output.root", "RECREATE"); */
@@ -213,7 +221,6 @@ bool EcalRecHitWorkerSimple::run(const edm::Event& evt,
 
   if (laserCorrection_)
     lasercalib = laser->getLaserCorrection(detid, evt.time());
-    //laser->analyze(evt, edm::es);
     //std::cout << " laser correction = " << lasercalib << std::endl;
    // tree_->Fill();
 
