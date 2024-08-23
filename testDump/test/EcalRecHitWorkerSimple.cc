@@ -29,7 +29,7 @@
 #include "TFile.h"
 #include "TTree.h"
 
-//fillInfo
+//FillInfo
 #include <string>
 #include <iostream>
 #include <map>
@@ -38,6 +38,12 @@
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "CondFormats/RunInfo/interface/FillInfo.h"
 #include "CondFormats/DataRecord/interface/FillInfoRcd.h"
+
+//LHCInfoPerFIll
+#include "CondFormats/RunInfo/interface/LHCInfoPerFill.h"
+#include "CondFormats/DataRecord/interface/LHCInfoPerFillRcd.h"
+
+
 
 class EcalRecHitWorkerSimple : public EcalRecHitWorkerBaseClass {
 public:
@@ -67,9 +73,9 @@ protected:
   edm::ESGetToken<EcalChannelStatus, EcalChannelStatusRcd> chStatusToken_;
   edm::ESGetToken<EcalLaserDbService, EcalLaserDbRecord> laserToken_;
 
-  // fillInfo
-  edm::ESHandle<FillInfo> fillInfo;
-  edm::ESGetToken<FillInfo, FillInfoRcd> m_FillInfoToken;  // = c.esConsumes<FillInfo, FillInfoRcd>()
+  // LHCInfoPerFill
+  edm::ESHandle<LHCInfoPerFill> m_LHCInfoPerFill;
+  edm::ESGetToken<LHCInfoPerFill, LHCInfoPerFillRcd> m_LHCInfoPerFillToken;  // = c.esConsumes<LHCInfoPerFill, LHCInfoPerFillRcd>()
 
   // Associate reco flagbit ( outer vector) to many db status flags (inner vector)
   std::vector<std::vector<uint32_t> > v_DB_reco_flags_;
@@ -128,9 +134,9 @@ EcalRecHitWorkerSimple::EcalRecHitWorkerSimple(const edm::ParameterSet& ps, edm:
 
     v_DB_reco_flags_[recoflagbit] = dbstatuses;
 
-  // --- fillInfo ---
+  // --- LHCInfoPerFill ---
 
-  m_FillInfoToken = c.esConsumes<FillInfo, FillInfoRcd>();
+  m_LHCInfoPerFillToken = c.esConsumes<LHCInfoPerFill, LHCInfoPerFillRcd>();
 
   }
 
@@ -145,7 +151,7 @@ EcalRecHitWorkerSimple::EcalRecHitWorkerSimple(const edm::ParameterSet& ps, edm:
 
 void EcalRecHitWorkerSimple::set(const edm::EventSetup& es) {
   ical = es.getHandle(icalToken_);
-  fillInfo = es.getHandle(m_FillInfoToken); // questo dà errore
+  m_LHCInfoPerFill = es.getHandle(m_LHCInfoPerFillToken); // questo dà errore
 
   if (!skipTimeCalib_) {
     itime = es.getHandle(itimeToken_);
@@ -201,19 +207,8 @@ bool EcalRecHitWorkerSimple::run(const edm::Event& evt,
 
 
 
-  // fillInfo
+  // LHCInfoPerFill
 
-  /*edm::LogPrint("FillInfoESAnalyzer") << "###FillInfoESAnalyzer::analyze" << std::endl;
-  edm::LogPrint("FillInfoESAnalyzer") << " I AM IN RUN NUMBER " << evt.id().run() << std::endl;
-  edm::LogPrint("FillInfoESAnalyzer") << " ---EVENT NUMBER " << evt.id().event() << std::endl; */
-  edm::eventsetup::EventSetupRecordKey recordKey(
-  edm::eventsetup::EventSetupRecordKey::TypeTag::findType("FillInfoRcd"));
-  if (recordKey.type() == edm::eventsetup::EventSetupRecordKey::TypeTag()) {
-    //record not found
-    edm::LogPrint("FillInfoESAnalyzer") << "Record \"FillInfoRcd"
-                                        << "\" does not exist " << std::endl;
-  }
- 
 
 
   /* TTree * tree_   tree_ = new TTree("LaserCorrections", "Laser Corrections for a crystal");
