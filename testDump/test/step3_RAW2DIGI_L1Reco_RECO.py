@@ -123,9 +123,9 @@ process.GEMGeometryESModule = cms.ESProducer("GEMGeometryESModule",
     fromDDD = cms.bool(False)
 )
 
-process.LaserResponseAnalyzer = cms.EDAnalyzer('LaserResponseAnalyzer',
-    detId = cms.uint32(838861517)  # ID del cristallo specifico
-)
+#process.LaserResponseAnalyzer = cms.EDAnalyzer('LaserResponseAnalyzer',
+#    detId = cms.uint32(838861517)  # ID del cristallo specifico
+#)
 
 #process.FillInfoESAnalyzer = cms.EDAnalyzer('FillInfoESAnalyzer')
 
@@ -133,7 +133,7 @@ process.LaserResponseAnalyzer = cms.EDAnalyzer('LaserResponseAnalyzer',
 process.raw2digi_step = cms.Path(process.RawToDigi)
 process.L1Reco_step = cms.Path(process.L1Reco)
 process.reconstruction_step = cms.Path(process.reconstruction)
-process.LaserResponseAnalyzer_step = cms.Path(process.LaserResponseAnalyzer)
+#process.LaserResponseAnalyzer_step = cms.Path(process.LaserResponseAnalyzer)
 #process.FillInfoESAnalyzer_step = cms.Path(process.FillInfoESAnalyzer)
 process.endjob_step = cms.EndPath(process.endOfProcess)
 process.RECOoutput_step = cms.EndPath(process.RECOoutput)
@@ -142,7 +142,7 @@ process.RECOoutput_step = cms.EndPath(process.RECOoutput)
 process.schedule = cms.Schedule(process.raw2digi_step,
                                 process.L1Reco_step,
                                 #process.FillInfoESAnalyzer_step,
-                                process.LaserResponseAnalyzer_step,
+                                #process.LaserResponseAnalyzer_step,
                                 process.reconstruction_step,
                                 process.endjob_step,
                                 process.RECOoutput_step)
