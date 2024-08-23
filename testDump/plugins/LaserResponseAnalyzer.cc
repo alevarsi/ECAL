@@ -5,6 +5,9 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "DataFormats/EcalDetId/interface/EBDetId.h"
 
+#include "CalibCalorimetry/EcalLaserAnalyzer/interface/MEEBGeom.h"
+#include "CalibCalorimetry/EcalLaserAnalyzer/interface/MEEEGeom.h"
+
 #include "CalibCalorimetry/EcalLaserCorrection/interface/EcalLaserDbService.h"
 #include "CalibCalorimetry/EcalLaserCorrection/interface/EcalLaserDbRecord.h"
 
@@ -64,30 +67,72 @@ LaserResponseAnalyzer::LaserResponseAnalyzer(const edm::ParameterSet& iConfig)
 
   laserResponseGraph_ = fs->make<TGraph>();
   laserResponseGraph_->SetName("laserResponseGraph");
-  laserResponseGraph_->SetTitle("Laser Correction vs Time for One Crystal");
+  laserResponseGraph_->SetTitle("Transparency vs Time for One Crystal");
   laserResponseGraph_->GetXaxis()->SetTitle("Time (s)");
-  laserResponseGraph_->GetYaxis()->SetTitle("Laser Correction");
+  laserResponseGraph_->GetYaxis()->SetTitle("Transparency");
   laserResponseGraph_->SetLineColor(kRed);
-  laserResponseGraph_->SetLineWidth(kRed);
+  laserResponseGraph_->SetLineWidth(2);
   laserResponseGraph_->SetMarkerStyle(21);
-  laserResponseGraph_->SetMarkerColor(kRed);
+  //laserResponseGraph_->SetMarkerColor(kRed);
   laserResponseGraph_->SetMarkerSize(0.7);
 
 }
 
 void LaserResponseAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
   const auto& laserDbService = iSetup.getData(laserDbServiceToken_);
+  DetId xid(detId_);
+
+  //int iLM;
+  int xind;
+  bool isBarrel = true;
+  if (xid.subdetId() == EcalBarrel) {
+    EBDetId ebid(xid.rawId());
+    xind = ebid.hashedIndex();
+    //iLM = MEEBGeom::lmr(ebid.ieta(), ebid.iphi());
+  } else if (xid.subdetId() == EcalEndcap) {
+    isBarrel = false;
+    EEDetId eeid(xid.rawId());
+    xind = eeid.hashedIndex();
+
+    // SuperCrystal coordinates
+    /*MEEEGeom::SuperCrysCoord iX = (eeid.ix() - 1) / 5 + 1;
+    MEEEGeom::SuperCrysCoord iY = (eeid.iy() - 1) / 5 + 1;
+    iLM = MEEEGeom::lmr(iX, iY, eeid.zside()); */
+  } else {
+    edm::LogError("EcalLaserDbService") << " DetId is NOT in ECAL Barrel or Endcap" << std::endl;
+    //return correctionFactor;
+    return;
+  }
+
+    auto getCond = [=](EcalFloatCondObjectContainer const& cond) -> float {
+    return isBarrel ? cond.barrel(xind) : cond.endcap(xind);
+  };
+
+  auto getPair =
+      [=](EcalLaserAPDPNRatios::EcalLaserAPDPNRatiosMap const& cond) -> EcalLaserAPDPNRatios::EcalLaserAPDPNpair {
+    return isBarrel ? cond.barrel(xind) : cond.endcap(xind);
+  };
+  //get ratiosRef R_0
+  const EcalLaserAPDPNRatiosRef* mAPDPNRatiosRef_ = laserDbService.getAPDPNRatiosRef();
+  const EcalLaserAPDPNRatiosRefMap& laserRefMap = mAPDPNRatiosRef_->getMap();
+  double apdpnref = getCond(laserRefMap);
+
+  //get ratios R(t)
+  const EcalLaserAPDPNRatios* mAPDPNRatios_ = laserDbService.getAPDPNRatios();
+  const EcalLaserAPDPNRatios::EcalLaserAPDPNRatiosMap& laserRatiosMap = mAPDPNRatios_->getLaserMap();
+  double apdpnpair = getPair(laserRatiosMap).p1;
+
   //const auto& lhcInfo = iSetup.getData(lhcInfoToken_);
 
   double runStartTime = iEvent.getRun().beginTime().value();
 
   double timeFromFillStart = (iEvent.time().value() - runStartTime) / 1e9; // Converti da ns a secondi
 
-  DetId myDetId(detId_);
-  double correction = laserDbService.getLaserCorrection(myDetId, iEvent.time());
+  double transparency = apdpnpair/apdpnref;
+  //double correction = laserDbService.getLaserCorrection(myDetId, iEvent.time());
 
   laserResponseGraph_->SetMarkerStyle(21);
-  laserResponseGraph_->SetPoint(laserResponseGraph_->GetN(), timeFromFillStart, correction);
+  laserResponseGraph_->SetPoint(laserResponseGraph_->GetN(), timeFromFillStart, transparency);
   
 
   // --- some checks ---
