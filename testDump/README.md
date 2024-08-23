@@ -1,12 +1,7 @@
-Main dumper. I'm currently working on
+## 23 Ago 2024
 
-```
+Working on `RecoLocalCalo/EcalRecProducers/plugins/EcalRecHitWorkerSimple.cc`. The most recent code is here in `ECAL/testDump/test/EcalRecHitWorkerSimple.cc`. I'm currently trying to implement the `FillInfo` library, with little to zero success!
 
-CalibCalorimetry/EcalLaserCorrection/src/EcalLaserDbService.cc
-
-RecoLocalCalo/EcalRecProducers/plugins/EcalRecHitWorkerSimple.cc
-
-```
 ## Run
 ```
 cmsRun test/step3_RAW2DIGI_L1Reco_RECO.py

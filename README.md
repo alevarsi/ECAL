@@ -1,5 +1,20 @@
+## 23 Ago 2024
+
+Working on `RecoLocalCalo/EcalRecProducers/plugins/EcalRecHitWorkerSimple.cc`. The most recent code is here in `ECAL/testDump/test/EcalRecHitWorkerSimple.cc`. I'm currently trying to implement the `FillInfo` library, with little to zero success!
+
+##  What I'm doing
+ Working on
+
+```
+
+CalibCalorimetry/EcalLaserCorrection/src/EcalLaserDbService.cc
+
+RecoLocalCalo/EcalRecProducers/plugins/EcalRecHitWorkerSimple.cc
+
+```
+
 ## testDump
-`testDump` is the repository I'm currently working in, as of 21 Ago 2024
+`testDump` is the repository I'm currently working in, as of 23 Ago 2024
 
 Ignore the rest, it's just testing material.
 
