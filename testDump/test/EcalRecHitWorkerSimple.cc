@@ -69,7 +69,7 @@ protected:
 
   // fillInfo
   edm::ESHandle<FillInfo> fillInfo;
-  edm::ESGetToken<FillInfo, FillInfoRcd> m_FillInfoToken;
+  edm::ESGetToken<FillInfo, FillInfoRcd> m_FillInfoToken;  // = c.esConsumes<FillInfo, FillInfoRcd>()
 
   // Associate reco flagbit ( outer vector) to many db status flags (inner vector)
   std::vector<std::vector<uint32_t> > v_DB_reco_flags_;
@@ -130,7 +130,7 @@ EcalRecHitWorkerSimple::EcalRecHitWorkerSimple(const edm::ParameterSet& ps, edm:
 
   // --- fillInfo ---
 
-  //m_FillInfoToken = c.esConsumes<FillInfo, FillInfoRcd>();
+  m_FillInfoToken = c.esConsumes<FillInfo, FillInfoRcd>();
 
   }
 
