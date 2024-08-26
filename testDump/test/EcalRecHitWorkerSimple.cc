@@ -35,6 +35,7 @@
 #include <map>
 #include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Framework/interface/ESHandle.h"
+#include "FWCore/Framework/interface/ESWatcher.h" // !!!
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "CondFormats/RunInfo/interface/FillInfo.h"
 #include "CondFormats/DataRecord/interface/FillInfoRcd.h"
@@ -76,9 +77,9 @@ protected:
   edm::ESGetToken<EcalLaserDbService, EcalLaserDbRecord> laserToken_;
 
   // --- LHCInfoPerFill ---
-  edm::ESGetToken<LHCInfoPerFill, LHCInfoPerFillRcd> LHCInfoPerFillToken_;  // = c.esConsumes<LHCInfoPerFill, LHCInfoPerFillRcd>()
-  edm::ESHandle<LHCInfoPerFill> m_LHCInfoPerFill;
-
+  edm::ESWatcher<LHCInfoPerFillRcd> infoPerFillWatcher_;
+  edm::ESGetToken<LHCInfoPerFill, LHCInfoPerFillRcd> LHCInfoPerFillToken_; 
+  LHCInfoPerFill m_LHCInfoPerFill;
 
   // Associate reco flagbit ( outer vector) to many db status flags (inner vector)
   std::vector<std::vector<uint32_t> > v_DB_reco_flags_;
@@ -157,8 +158,13 @@ void EcalRecHitWorkerSimple::set(const edm::EventSetup& es) {
   ical = es.getHandle(icalToken_);
 
   // --- LHCInfoPerFill ---
+  if (1 == 2)     edm::LogWarning("EcalRecHitWorkerSimple") << "test";
 
-  m_LHCInfoPerFill = es.getHandle(LHCInfoPerFillToken_);
+  if (infoPerFillWatcher_.check(es)) { // Questo controlla se c'è un aggiornamento o se il record è disponibile
+    m_LHCInfoPerFill = es.getData(LHCInfoPerFillToken_);
+  } else {
+    edm::LogWarning("EcalRecHitWorkerSimple") << "LHCInfoPerFillRcd non disponibile nell'EventSetup";
+  }
 
 
   if (!skipTimeCalib_) {
@@ -217,27 +223,22 @@ bool EcalRecHitWorkerSimple::run(const edm::Event& evt,
 
   // --- LHCInfoPerFill ---
   
-  double timeSinceFillStart = m_LHCInfoPerFill->beginTime(); 
+  double timeSinceFillStart = m_LHCInfoPerFill.beginTime(); 
   std::cout << "\nTime since fill start = " << timeSinceFillStart << std::endl;
-
+/*
   int fillN = m_LHCInfoPerFill->fillNumber();
   std::cout << "\n Fill number = " << fillN << std::endl;
   float inst_lumi = m_LHCInfoPerFill->instLumi();
-  std::cout << "\n Inst Lumi = " << inst_lumi << std::endl;
-
-
-
-  /* TTree * tree_   tree_ = new TTree("LaserCorrections", "Laser Corrections for a crystal");
-  TFile * file_ = new TFile("laser_correction_output.root", "RECREATE"); */
+  std::cout << "\n Inst Lumi = " << inst_lumi << std::endl; */
   
   // get laser coefficient
   float lasercalib = 1.;
   //tree_->Branch("laserCorrection", &lasercalib, "laserCorrection/F");
 
-  if (laserCorrection_)
+  if (laserCorrection_) {
     lasercalib = laser->getLaserCorrection(detid, evt.time());
-    //std::cout << " laser correction = " << lasercalib << std::endl;
-   // tree_->Fill();
+    //std::cout << " laser correction = " << lasercalib << std::endl; // works
+  }
 
   // get time calibration coefficient
   EcalTimeCalibConstant itimeconst = 0;
