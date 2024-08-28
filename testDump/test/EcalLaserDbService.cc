@@ -168,21 +168,25 @@ float EcalLaserDbService::getLaserCorrection(DetId const& xid, edm::Timestamp co
   // interpolation
 
   //RUN 384187
-  float a = 0.0621;
-  float b = 6.682;
-  float c = 0.1832;
-  float t_0 = 1722976805;
+  float a = 0.0194;
+  float b = 0.000125;
+  float c = 5.46e-7; //parametri ottenuti da iRing30_fill6371
 
-  //std::cout << "t_fit_value = " << iTime.value() << std::endl; //sbagliatissimo
-  float t = (float)iTime.unixTime() - t_0; //sembra quello giusto (in secondi)
-  std::cout << "t_fit_secondi(credo) = " << t << std::endl;
-  float transparency_norm = a*exp(-b/1000*t) + (1-a)*exp(c/1000*t); // funzione usata per fittare i dati normalizzati
+  auto t_0_run = 1722976805; //unixtime in secondi di startRun
+  auto t_0_fill = t_0_run + 301 * 23 ; // LumiSection * 23secondi
+  auto t_evt = iTime.unixTime();
+  //std::cout << "tempo evento = " << t_evt  << std::endl; //IN SECONDI!!
+
+  float t = t_evt - t_0_fill; //sembra quello giusto (in secondi)
+  //std::cout << "delta T dal fill, t_fit = " << t << std::endl; 
+
+  float transparency_norm = a*exp(-b*t) + (1-a)*exp(c*t); // funzione usata per fittare i dati normalizzati
   //std::cout << "apdpn = " << apdpnpair.p1 << std::endl;
   //std::cout << "apdpnref = " << apdpnref << std::endl;
   float transparency =  apdpnpair.p1/apdpnref * transparency_norm; 
-  std::cout << "Transparency predicted= " << transparency << std::endl;
+  //std::cout << "Transparency predicted= " << transparency << std::endl;
   correctionFactor = 1.f / (std::pow(transparency, alpha));
-  std::cout << "LC = " << correctionFactor << std::endl;
+  //std::cout << "LC = " << correctionFactor << std::endl;
   /*
   long long t_i = 0, t_f = 0;
   float p_i = 0, p_f = 0;
