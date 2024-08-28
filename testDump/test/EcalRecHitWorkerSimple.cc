@@ -227,20 +227,10 @@ bool EcalRecHitWorkerSimple::run(const edm::Event& evt,
   
   // get laser coefficient
   float lasercalib = 1.;
-  //auto t_0 = 1722969600000;
-  auto t_0 = 1722976805; //unixtime in secondi di startRun
-  if (laserCorrection_) {
 
-    //auto t_fit = evt.time().value()/1e9 - t_0;
-    //std::cout << "tempo = " << t_fit  << std::endl;
-    std::cout << "tempo evento = " << evt.time().unixTime()  << std::endl; //IN SECONDI!!
-    std::cout << "delta T = " << evt.time().unixTime() - t_0 << std::endl;
-    //float = evt.time().value() - evt.getRun().beginTime().value();
-    //lasercalib = laser->getLaserCorrection(detid, edm::Timestamp(t_fit));
+  if (laserCorrection_) 
     lasercalib = laser->getLaserCorrection(detid, evt.time());
-
-    std::cout << " laser correction = " << lasercalib << std::endl; // works
-  }
+  
 
   // get time calibration coefficient
   EcalTimeCalibConstant itimeconst = 0;
