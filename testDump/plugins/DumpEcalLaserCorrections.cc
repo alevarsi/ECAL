@@ -1,4 +1,4 @@
-#include "DataFormats/EcalRecHit/interface/EcalRecHitCollections.h"
+/* #include "DataFormats/EcalRecHit/interface/EcalRecHitCollections.h"
 #include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/Framework/interface/Event.h"
@@ -61,4 +61,4 @@ void DumpEcalLaserCorrections::analyze(const edm::Event& iEvent, const edm::Even
   }
 }
 
-DEFINE_FWK_MODULE(DumpEcalLaserCorrections);
+DEFINE_FWK_MODULE(DumpEcalLaserCorrections); */
