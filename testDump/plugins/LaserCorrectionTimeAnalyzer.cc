@@ -1,6 +1,7 @@
-/* // system include files
+/*  // system include files
 #include <memory>
 #include <vector>
+#include <iostream>
 
 // CMSSW framework include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
@@ -29,7 +30,8 @@
 
 
 // ROOT include files
-#include "TTree.h"
+#include "TGraph.h"
+#include "TH1.h"
 
 class LaserCorrectionTimeAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources> {
 public:
@@ -47,11 +49,11 @@ private:
     edm::ESGetToken<EcalLaserDbService, EcalLaserDbRecord> laserDbToken_;
     edm::ESGetToken<LHCInfo, LHCInfoRcd> lhcInfoToken_;
     
-    TTree* tree_;
     float laserCorrection_;
     float time_;
-    float energy_;
-    int hitDetId_;
+
+    TGraph* laserCorrectionGraph_;  // Aggiungi un grafico per un cristallo specifico
+    uint32_t selectedCrystal_; 
 };
 
 LaserCorrectionTimeAnalyzer::LaserCorrectionTimeAnalyzer(const edm::ParameterSet& iConfig)
@@ -62,51 +64,41 @@ LaserCorrectionTimeAnalyzer::LaserCorrectionTimeAnalyzer(const edm::ParameterSet
 
 {
     edm::Service<TFileService> fs;
-    tree_ = fs->make<TTree>("LaserCorrectionTimeTree", "Tree with laser correction and time");
 
-    tree_->Branch("laserCorrection", &laserCorrection_, "laserCorrection/F");
-    tree_->Branch("time", &time_, "time/F");
-    tree_->Branch("energy", &energy_, "energy/F");
-    tree_->Branch("hitDetId", &hitDetId_, "hitDetId/I");
+    //graph LC
+    laserCorrectionGraph_ = fs->make<TGraph>();
+    laserCorrectionGraph_->SetName("laserCorrectionGraph");
+    laserCorrectionGraph_->SetTitle("Laser Correction vs Time for Selected Crystal");
+    laserCorrectionGraph_->GetXaxis()->SetTitle("Time");
+    laserCorrectionGraph_->GetYaxis()->SetTitle("Laser Correction");
 }
 
 LaserCorrectionTimeAnalyzer::~LaserCorrectionTimeAnalyzer() {}
 
 void LaserCorrectionTimeAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
-    edm::Handle<EcalRecHitCollection> ebRecHits;
-    iEvent.getByToken(ebRecHitToken_, ebRecHits);
     
     const auto& lhcInfo = iSetup.getData(lhcInfoToken_);
     const auto& laser = iSetup.getData(laserDbToken_);
 
     auto fillStartTime = lhcInfo.beginTime();
+    std::cout << "fillStartTime = " << fillStartTime << std::endl;
 
-    for (const auto& hit : *ebRecHits) {
-        laserCorrection_ = laser.getLaserCorrection(hit.detid(), iEvent.time());
-        time_ = hit.time();
-        energy_ = hit.energy();
-        hitDetId_ = hit.detid().rawId();
+    laserCorrection_ = laser.getLaserCorrection(838861517, iEvent.time());
+    float t_0 = 1722977545;
+    time_ = iEvent.time().value() - t_0;
 
-        tree_->Fill();
-    }
+    int nPoints = laserCorrectionGraph_->GetN();
+    laserCorrectionGraph_->SetPoint(nPoints, time_, laserCorrection_);
 
-    edm::Handle<EcalRecHitCollection> eeRecHits;
-    iEvent.getByToken(eeRecHitToken_, eeRecHits);
-
-    for (const auto& hit : *eeRecHits) {
-        laserCorrection_ = laser.getLaserCorrection(hit.detid(), iEvent.time());
-        time_ = hit.time();
-        energy_ = hit.energy();
-        hitDetId_ = hit.detid().rawId();
-
-        tree_->Fill();
-    }
 }
 
 void LaserCorrectionTimeAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
     edm::ParameterSetDescription desc;
     desc.add<edm::InputTag>("EBRecHitTag", edm::InputTag("ecalRecHit", "EcalRecHitsEB"));
     desc.add<edm::InputTag>("EERecHitTag", edm::InputTag("ecalRecHit", "EcalRecHitsEE"));
+    desc.add<uint32_t>("selectedCrystal", 838861517);  // ID del cristallo da analizzare 
+    descriptions.add("laserCorrectionTimeAnalyzer", desc);
 }
 
-DEFINE_FWK_MODULE(LaserCorrectionTimeAnalyzer); */
+DEFINE_FWK_MODULE(LaserCorrectionTimeAnalyzer); 
+*/
