@@ -1,4 +1,4 @@
-#include "FWCore/Framework/interface/one/EDAnalyzer.h"
+/* #include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -95,9 +95,9 @@ void LaserResponseAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSe
     xind = eeid.hashedIndex();
 
     // SuperCrystal coordinates
-    /*MEEEGeom::SuperCrysCoord iX = (eeid.ix() - 1) / 5 + 1;
+    MEEEGeom::SuperCrysCoord iX = (eeid.ix() - 1) / 5 + 1;
     MEEEGeom::SuperCrysCoord iY = (eeid.iy() - 1) / 5 + 1;
-    iLM = MEEEGeom::lmr(iX, iY, eeid.zside()); */
+    iLM = MEEEGeom::lmr(iX, iY, eeid.zside()); 
   } else {
     edm::LogError("EcalLaserDbService") << " DetId is NOT in ECAL Barrel or Endcap" << std::endl;
     //return correctionFactor;
@@ -143,8 +143,8 @@ void LaserResponseAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSe
   //std::cout << "\n Correction = " << correction << std::endl;
 
 
-  /* times_.push_back(timeFromFillStart);
-  responses_.push_back(correction); */
+   times_.push_back(timeFromFillStart);
+  responses_.push_back(correction); 
 }
 
 
@@ -163,4 +163,4 @@ void LaserResponseAnalyzer::fillDescriptions(edm::ConfigurationDescriptions& des
 }
 
 // Define this as a plug-in
-DEFINE_FWK_MODULE(LaserResponseAnalyzer);
+DEFINE_FWK_MODULE(LaserResponseAnalyzer); */
