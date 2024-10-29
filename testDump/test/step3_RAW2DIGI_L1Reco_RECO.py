@@ -52,8 +52,8 @@ process.TFileService = cms.Service('TFileService',
 # Laser Correction
 #process.dumpEcalLaserCorrections = cms.EDAnalyzer('DumpEcalLaserCorrections',
 #    recHits=cms.InputTag("ecalRecHit", "EcalRecHitsEE"),  
-#    outputFileName=cms.string('laser_corrections.csv'),#
-#    detId=cms.uint32(838861517)  # ID del cristallo specifico
+#    outputFileName=cms.string('laser_corrections.csv'),
+#   detId=cms.uint32(838861517)  # ID del cristallo specifico
 #)
 
 process.options = cms.untracked.PSet(
@@ -115,7 +115,24 @@ process.RECOoutput = cms.OutputModule("PoolOutputModule",
 
 # Other statements
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_data', '')
+process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_data', '') #funziona per interpolazione + mio codice
+
+### Il codice sotto serve per attivare correzione HLT (correzione costante)
+
+#process.GlobalTag.toGet = cms.VPSet(
+
+#   cms.PSet(record = cms.string("EcalLaserAPDPNRatiosRcd"),
+#            tag = cms.string("EcalLaserAPDPNRatios_weekly_hlt"),
+#            connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS")
+#            ),
+
+#    cms.PSet(record = cms.string("EcalLaserAPDPNRatiosRefRcd"),
+#            tag = cms.string("EcalLaserAPDPNRatiosRef_v2_hlt"),
+#            connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS")
+#            ),
+
+#)
+
 
 process.GEMGeometryESModule = cms.ESProducer("GEMGeometryESModule",
     alignmentsLabel = cms.string(''),
@@ -129,22 +146,23 @@ process.GEMGeometryESModule = cms.ESProducer("GEMGeometryESModule",
 #    detId = cms.uint32(838861517)  # ID del cristallo specifico
 #)
 
-#process.FillInfoESAnalyzer = cms.EDAnalyzer('FillInfoESAnalyzer')
+process.LaserCorrectionTimeAnalyzer = cms.EDAnalyzer('LaserCorrectionTimeAnalyzer')
+
 
 # Path and EndPath definitions
 process.raw2digi_step = cms.Path(process.RawToDigi)
 process.L1Reco_step = cms.Path(process.L1Reco)
 process.reconstruction_step = cms.Path(process.reconstruction)
 #process.LaserResponseAnalyzer_step = cms.Path(process.LaserResponseAnalyzer)
-#process.FillInfoESAnalyzer_step = cms.Path(process.FillInfoESAnalyzer)
+#process.LaserCorrectionTimeAnalyzer_step = cms.Path(process.LaserCorrectionTimeAnalyzer)
 process.endjob_step = cms.EndPath(process.endOfProcess)
 process.RECOoutput_step = cms.EndPath(process.RECOoutput)
 
 # Schedule definition
 process.schedule = cms.Schedule(process.raw2digi_step,
                                 process.L1Reco_step,
-                                #process.FillInfoESAnalyzer_step,
                                 #process.LaserResponseAnalyzer_step,
+                                #process.LaserCorrectionTimeAnalyzer_step,
                                 process.reconstruction_step,
                                 process.endjob_step,
                                 process.RECOoutput_step)
