@@ -29,16 +29,19 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 process.options.numberOfThreads=cms.untracked.uint32(8)
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(100),
-    output = cms.optional.untracked.allowed(cms.int32,cms.PSet)
+    input = cms.untracked.int32(100)
 )
 
-process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(1)
+process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(10)
 
 # Input source
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring(options.inputFiles),
-    secondaryFileNames = cms.untracked.vstring()
+                                fileNames = cms.untracked.vstring(options.inputFiles),
+                                secondaryFileNames = cms.untracked.vstring()
+                                )
+
+process.TFileService = cms.Service("TFileService",
+     fileName = cms.string(options.outputFile)
 )
 
 process.options = cms.untracked.PSet(
@@ -97,7 +100,6 @@ process.RECOoutput = cms.OutputModule("PoolOutputModule",
                                           "drop *_ecalDigis_*_*",
                                           "drop *_ecalPreshowerDigis_*_*"),
 
-    #outputCommands = process.RECOEventContent.outputCommands,    splitLevel = cms.untracked.int32(0)
 )
 
 # Additional output definition
