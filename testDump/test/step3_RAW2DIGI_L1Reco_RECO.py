@@ -37,24 +37,13 @@ process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(1)
 
 # Input source
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring('file:/eos/user/a/amassiro/ECAL/2024/Era2024G/Run384187/1eabd076-2d7c-48ce-9f3f-d101256e304f.root'),
+    fileNames = cms.untracked.vstring(options.inputFiles),
     secondaryFileNames = cms.untracked.vstring()
 )
 
 process.options = cms.untracked.PSet(
    SkipEvent = cms.untracked.vstring('ProductNotFound'),
 )
-
-process.TFileService = cms.Service('TFileService',
-    fileName = cms.string('laser_response.root')
-)
-
-# Laser Correction
-#process.dumpEcalLaserCorrections = cms.EDAnalyzer('DumpEcalLaserCorrections',
-#    recHits=cms.InputTag("ecalRecHit", "EcalRecHitsEE"),  
-#    outputFileName=cms.string('laser_corrections.csv'),
-#   detId=cms.uint32(838861517)  # ID del cristallo specifico
-#)
 
 process.options = cms.untracked.PSet(
     IgnoreCompletely = cms.untracked.vstring(),
@@ -102,7 +91,7 @@ process.RECOoutput = cms.OutputModule("PoolOutputModule",
         dataTier = cms.untracked.string('RECO'),
         filterName = cms.untracked.string('')
     ),
-    fileName = cms.untracked.string('file:testCmsDriver.root'),
+    fileName = cms.untracked.string(options.outputFile),
     outputCommands= cms.untracked.vstring("drop *",
                                           'keep *_ecal*_*_*',
                                           "drop *_ecalDigis_*_*",
@@ -118,21 +107,21 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_data', '') #funziona per interpolazione + mio codice
 
 ### Il codice sotto serve per attivare correzione HLT (correzione costante)
+"""
+process.GlobalTag.toGet = cms.VPSet(
 
-#process.GlobalTag.toGet = cms.VPSet(
+   cms.PSet(record = cms.string("EcalLaserAPDPNRatiosRcd"),
+            tag = cms.string("EcalLaserAPDPNRatios_weekly_hlt"),
+            connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS")
+            ),
 
-#   cms.PSet(record = cms.string("EcalLaserAPDPNRatiosRcd"),
-#            tag = cms.string("EcalLaserAPDPNRatios_weekly_hlt"),
-#            connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS")
-#            ),
+    cms.PSet(record = cms.string("EcalLaserAPDPNRatiosRefRcd"),
+            tag = cms.string("EcalLaserAPDPNRatiosRef_v2_hlt"),
+            connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS")
+            ),
 
-#    cms.PSet(record = cms.string("EcalLaserAPDPNRatiosRefRcd"),
-#            tag = cms.string("EcalLaserAPDPNRatiosRef_v2_hlt"),
-#            connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS")
-#            ),
-
-#)
-
+)
+"""
 
 process.GEMGeometryESModule = cms.ESProducer("GEMGeometryESModule",
     alignmentsLabel = cms.string(''),
@@ -175,7 +164,3 @@ associatePatAlgosToolsTask(process)
 from FWCore.Modules.logErrorHarvester_cff import customiseLogErrorHarvesterUsingOutputCommands
 process = customiseLogErrorHarvesterUsingOutputCommands(process)
 
-# Add early deletion of temporary data products to reduce peak memory need
-#from Configuration.StandardSequences.earlyDeleteSettings_cff import customiseEarlyDelete
-#process = customiseEarlyDelete(process)
-# End adding early deletion
