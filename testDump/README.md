@@ -1,13 +1,9 @@
-## 23 Ago 2024
 
-Working on `RecoLocalCalo/EcalRecProducers/plugins/EcalRecHitWorkerSimple.cc`. The most recent code is here in `ECAL/testDump/test/EcalRecHitWorkerSimple.cc`. I'm currently trying to implement the `FillInfo` library, with little to zero success!
-
-## Run
+## Run (31 Oct 2024)
+Inside 'CMSSW_14_0_13_patch1/src' produce RECO with:
 ```
-cmsRun test/step3_RAW2DIGI_L1Reco_RECO.py
+cmsRun ECAL/testDump/test/step3_RAW2DIGI_L1Reco_RECO.py inputFiles_load=myFiles.txt outputFile=outputNAME.root
 ```
-## 21 Ago 2024
-Currently using `LaserResponseAnalyzer.cc`.
 
 ## 20 Ago 2024
 It uses the plugin `LaserCorrectionAnalyzer.cc`. Should output `output.root`. The graph of Laser vs Time is currently empty because the xtal I chose doesn't get hit. 
