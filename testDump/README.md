@@ -1,8 +1,8 @@
 
 ## Run (31 Oct 2024)
-Inside 'CMSSW_14_0_13_patch1/src' produce RECO with:
+Produce RECO from RAW with:
 ```
-cmsRun ECAL/testDump/test/step3_RAW2DIGI_L1Reco_RECO.py inputFiles_load=myFiles.txt outputFile=outputNAME.root
+cmsRun step3_RAW2DIGI_L1Reco_RECO.py inputFiles_load=myFiles.txt outputFile=outputNAME.root
 ```
 
 ## 20 Ago 2024
