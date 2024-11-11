@@ -29,7 +29,7 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 process.options.numberOfThreads=cms.untracked.uint32(8)
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(100)
+    input = cms.untracked.int32(200)
 )
 
 process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(10)
@@ -107,9 +107,8 @@ process.RECOoutput = cms.OutputModule("PoolOutputModule",
 # Other statements
 from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_data', '') #funziona per interpolazione + mio codice
-
-### Il codice sotto serve per attivare correzione HLT (correzione costante)
 """
+### Il codice sotto serve per attivare correzione HLT (correzione costante)
 process.GlobalTag.toGet = cms.VPSet(
 
    cms.PSet(record = cms.string("EcalLaserAPDPNRatiosRcd"),
@@ -124,7 +123,6 @@ process.GlobalTag.toGet = cms.VPSet(
 
 )
 """
-
 process.GEMGeometryESModule = cms.ESProducer("GEMGeometryESModule",
     alignmentsLabel = cms.string(''),
     appendToDataLabel = cms.string(''),
@@ -132,12 +130,6 @@ process.GEMGeometryESModule = cms.ESProducer("GEMGeometryESModule",
     fromDD4hep = cms.bool(False),
     fromDDD = cms.bool(False)
 )
-
-#process.LaserResponseAnalyzer = cms.EDAnalyzer('LaserResponseAnalyzer',
-#    detId = cms.uint32(838861517)  # ID del cristallo specifico
-#)
-
-process.LaserCorrectionTimeAnalyzer = cms.EDAnalyzer('LaserCorrectionTimeAnalyzer')
 
 
 # Path and EndPath definitions
@@ -152,8 +144,6 @@ process.RECOoutput_step = cms.EndPath(process.RECOoutput)
 # Schedule definition
 process.schedule = cms.Schedule(process.raw2digi_step,
                                 process.L1Reco_step,
-                                #process.LaserResponseAnalyzer_step,
-                                #process.LaserCorrectionTimeAnalyzer_step,
                                 process.reconstruction_step,
                                 process.endjob_step,
                                 process.RECOoutput_step)
