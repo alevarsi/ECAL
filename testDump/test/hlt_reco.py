@@ -136,8 +136,6 @@ process.GEMGeometryESModule = cms.ESProducer("GEMGeometryESModule",
 process.raw2digi_step = cms.Path(process.RawToDigi)
 process.L1Reco_step = cms.Path(process.L1Reco)
 process.reconstruction_step = cms.Path(process.reconstruction)
-#process.LaserResponseAnalyzer_step = cms.Path(process.LaserResponseAnalyzer)
-#process.LaserCorrectionTimeAnalyzer_step = cms.Path(process.LaserCorrectionTimeAnalyzer)
 process.endjob_step = cms.EndPath(process.endOfProcess)
 process.RECOoutput_step = cms.EndPath(process.RECOoutput)
 
