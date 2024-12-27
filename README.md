@@ -14,9 +14,7 @@ Changes in `testDump/test/EcalLaserDbService.cc` are at line 165
 ##  Working on CMMSW in
 
 ```
-
 CalibCalorimetry/EcalLaserCorrection/src/EcalLaserDbService.cc
-
 
 ```
 
