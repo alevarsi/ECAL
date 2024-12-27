@@ -21,11 +21,6 @@ CalibCalorimetry/EcalLaserCorrection/src/EcalLaserDbService.cc
 
 ```
 
-## testDump
-`testDump` is the repository I'm currently working in, as of 23 Ago 2024
-
-Ignore the rest, it's just testing material.
-
 ## How to download this repository
 ```
 in CMSSW_release/src
@@ -45,9 +40,6 @@ cmsRun step3_RAW2DIGI_L1Reco_RECO.py
 ```
 Should output the file `testCmsDriver.root`
 
-## cc_transp.cc
-
-It's just something cool to look at, not so useful because I used data from 2017 and I still can't obtain current data. 
 
 
 
