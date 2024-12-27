@@ -11,8 +11,7 @@ cmsRun prompt_reco.py inputFiles=file:/eos/user/a/avarsi/DATA/124c7812-eae6-4cdd
 
 Changes in `testDump/test/EcalLaserDbService.cc` are at line 165
 
-##  What I'm doing
- Working on
+##  Working on CMMSW in
 
 ```
 
