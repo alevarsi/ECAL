@@ -1,6 +1,8 @@
 
-## Run (31 Oct 2024)
-Produce RECO from RAW with:
+## test
+2 different files to perform Reconstruction from RAW, either with PROMPT_RECO TAG or HLT TAG
 ```
-cmsRun step3_RAW2DIGI_L1Reco_RECO.py inputFiles_load=myFiles.txt outputFile=outputNAME.root
+cmsRun prompt_reco.py inputFiles_load=myFiles.txt outputFile=outputNAME.root
+
+cmsRun hlt_reco.py inputFiles_load=myFiles.txt outputFile=outputNAME.root
 ```
