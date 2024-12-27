@@ -3,9 +3,9 @@
 in `testDump/test` do RECO with
 
 ```
-cmsRun hlt_reco.py inputFiles=file:/eos/user/a/avarsi/DATA/124c7812-eae6-4cdd-8b07-edde106a1609.root outputFile=outputHLT_3.root
+cmsRun hlt_reco.py inputFiles=file:/eos/user/a/avarsi/DATA/124c7812-eae6-4cdd-8b07-edde106a1609.root outputFile=outputHLT.root
 
-cmsRun prompt_reco.py inputFiles=file:/eos/user/a/avarsi/DATA/124c7812-eae6-4cdd-8b07-edde106a1609.root outputFile=outputPROMPTRECO_3.root
+cmsRun prompt_reco.py inputFiles=file:/eos/user/a/avarsi/DATA/124c7812-eae6-4cdd-8b07-edde106a1609.root outputFile=outputPROMPTRECO.root
 
 ```
 
